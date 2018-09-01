@@ -70,7 +70,7 @@ def build_model(input_shape,
     #    opt = hvd.DistributedOptimizer(opt)
 
     # Compile the model
-    model = models.Model(inputs=inputs, outputs=outputs)
+    model = models.Model(inputs=inputs, outputs=outputs, name='RPVClassifier')
     model.compile(optimizer=opt,
                   loss='binary_crossentropy',
                   metrics=['accuracy'])

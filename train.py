@@ -27,7 +27,6 @@ def parse_args():
     add_arg('config', nargs='?', default='config.yaml')
     add_arg('--show-config', action='store_true')
     add_arg('--interactive', action='store_true')
-
     return parser.parse_args()
 
 def main():
@@ -45,16 +44,16 @@ def main():
     # Load configuration file
     with open(args.config) as f:
         config = yaml.load(f)
-    print(config)
+    logging.info('Configuration: %s' % config)
 
     # Load the data files
     train_data, valid_data, test_data = load_dataset(**config['data_config'])
     train_input, train_labels, train_weights = train_data
     valid_input, valid_labels, valid_weights = valid_data
     test_input, test_labels, test_weights = test_data
-    print('train shape:', train_input.shape, 'Mean label:', train_labels.mean())
-    print('valid shape:', valid_input.shape, 'Mean label:', valid_labels.mean())
-    print('test shape: ', test_input.shape, 'Mean label:', test_labels.mean())
+    logging.info('train shape: %s Mean label %s' % (train_input.shape, train_labels.mean()))
+    logging.info('valid shape: %s Mean label %s' % (valid_input.shape, valid_labels.mean()))
+    logging.info('test shape:  %s Mean label %s' % (test_input.shape, test_labels.mean()))
 
     # Build the model
     model = build_model(train_input.shape[1:], **config['model_config'])
