@@ -66,6 +66,11 @@ def main():
                         validation_data=(valid_input, valid_labels),
                         **config['training_config'])
 
+    # Evaluate on the test set
+    test_loss, test_acc = model.evaluate(test_input, test_labels, verbose=2)
+    logging.info('Test loss:     %g' % test_loss)
+    logging.info('Test accuracy: %g' % test_acc)
+
     # Drop to IPython interactive shell
     if args.interactive:
         logging.info('Starting IPython interactive session')
