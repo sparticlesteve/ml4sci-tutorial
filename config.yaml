@@ -18,3 +18,5 @@ model_config:
 training_config:
     batch_size: 128
     epochs: 4
+
+checkpoint_file: $SCRATCH/ml4sci-tutorial/checkpoints/model.h5

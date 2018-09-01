@@ -65,11 +65,18 @@ def main():
     model = build_model(train_input.shape[1:], **config['model_config'])
     model.summary()
 
-    # TODO: Add the checkpointing
+    # Training hooks
+    callbacks = []
+
+    # Model checkpointing
+    checkpoint_file = os.path.expandvars(config['checkpoint_file'])
+    os.makedirs(os.path.dirname(checkpoint_file), exist_ok=True)
+    callbacks.append(keras.callbacks.ModelCheckpoint(checkpoint_file))
 
     # Run the training
     history = model.fit(x=train_input, y=train_labels,
                         validation_data=(valid_input, valid_labels),
+                        callbacks=callbacks, verbose=2,
                         **config['training_config'])
 
     # Evaluate on the test set
