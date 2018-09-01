@@ -1,3 +1,7 @@
+session_config:
+    n_inter_threads: 2
+    n_intra_threads: 32
+
 data_config:
     path: /global/cscratch1/sd/sfarrell/atlas-rpv-images
     n_train: 1024 #64000

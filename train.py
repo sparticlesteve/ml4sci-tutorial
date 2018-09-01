@@ -15,10 +15,11 @@ import logging
 
 # Externals
 import yaml
-#import keras
+import keras
 
 # Locals
 from hepcnn import load_dataset, build_model
+from utils import configure_session
 
 def parse_args():
     """Parse command line arguments."""
@@ -54,6 +55,11 @@ def main():
     logging.info('train shape: %s Mean label %s' % (train_input.shape, train_labels.mean()))
     logging.info('valid shape: %s Mean label %s' % (valid_input.shape, valid_labels.mean()))
     logging.info('test shape:  %s Mean label %s' % (test_input.shape, test_labels.mean()))
+
+    # Configure the session (e.g. thread settings)
+    keras.backend.set_session(
+        configure_session(**config['session_config'])
+    )
 
     # Build the model
     model = build_model(train_input.shape[1:], **config['model_config'])
