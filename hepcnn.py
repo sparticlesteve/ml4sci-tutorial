@@ -13,8 +13,7 @@ import os
 
 # Externals
 import h5py
-#import tf.keras
-from tensorflow.keras import layers, models, optimizers
+from keras import layers, models, optimizers
 
 def load_file(filename, n_samples):
     with h5py.File(filename) as f:
