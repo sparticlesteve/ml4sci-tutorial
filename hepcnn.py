@@ -15,7 +15,9 @@ import os
 import h5py
 from keras import layers, models, optimizers
 
+
 def load_file(filename, n_samples):
+    """Load one file from the dataset"""
     with h5py.File(filename, 'r') as f:
         data_group = f['all_events']
         data = data_group['hist'][:n_samples][:,:,:,None]
@@ -24,6 +26,7 @@ def load_file(filename, n_samples):
     return data, labels, weights
 
 def load_dataset(path, n_train=412416, n_valid=137471, n_test=137471):
+    """Load the entire dataset"""
     train_file = os.path.join(path, 'train.h5')
     valid_file = os.path.join(path, 'val.h5')
     test_file = os.path.join(path, 'test.h5')
@@ -39,6 +42,7 @@ def build_model(input_shape,
                 dropout=0.5,
                 optimizer='Adam', lr=0.001,
                 use_horovod=False):
+    """Construct the Keras model"""
 
     # Define the inputs
     inputs = layers.Input(shape=input_shape)
