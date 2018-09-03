@@ -4,9 +4,9 @@ session_config:
 
 data_config:
     path: /global/cscratch1/sd/sfarrell/atlas-rpv-images
-    n_train: 1024 #64000
-    n_valid: 1024 #32000
-    n_test: 1024 #32000
+    n_train: 16000 #1024 #64000
+    n_valid: 16000 #32000
+    n_test: 16000 #32000
 
 model_config:
     conv_sizes: [16, 32, 64]
