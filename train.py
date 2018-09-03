@@ -16,6 +16,7 @@ import logging
 # Externals
 import yaml
 import keras
+import horovod.keras as hvd
 
 # Locals
 from hepcnn import load_dataset, build_model
@@ -32,6 +33,10 @@ def parse_args():
 
 def main():
     """Main function"""
+
+    # Initialize horovod
+    hvd.init()
+
     # Parse the command line
     args = parse_args()
 
@@ -41,6 +46,9 @@ def main():
     logging.info('Initializing')
     if args.show_config:
         logging.info('Command line config: %s' % args)
+
+    logging.info('MPI rank %i, local rank %i, host %s' %
+                 (hvd.rank(), hvd.local_rank(), socket.gethostname()))
 
     # Load configuration file
     with open(args.config) as f:
@@ -62,16 +70,22 @@ def main():
     )
 
     # Build the model
-    model = build_model(train_input.shape[1:], **config['model_config'])
-    model.summary()
+    model = build_model(train_input.shape[1:], use_horovod=True,
+                        **config['model_config'])
+    if hvd.rank() == 0:
+        model.summary()
 
     # Training hooks
     callbacks = []
 
+    # Horovod model synchronization during initialization
+    callbacks.append(hvd.callbacks.BroadcastGlobalVariablesCallback(0))
+
     # Model checkpointing
-    checkpoint_file = os.path.expandvars(config['checkpoint_file'])
-    os.makedirs(os.path.dirname(checkpoint_file), exist_ok=True)
-    callbacks.append(keras.callbacks.ModelCheckpoint(checkpoint_file))
+    if hvd.rank() == 0:
+        checkpoint_file = os.path.expandvars(config['checkpoint_file'])
+        os.makedirs(os.path.dirname(checkpoint_file), exist_ok=True)
+        callbacks.append(keras.callbacks.ModelCheckpoint(checkpoint_file))
 
     # Run the training
     history = model.fit(x=train_input, y=train_labels,

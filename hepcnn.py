@@ -69,9 +69,9 @@ def build_model(input_shape,
                     Nadam=optimizers.Nadam,
                     Adadelta=optimizers.Adadelta)
     opt = opt_dict[optimizer](lr=lr)
-    #if use_horovod:
-    #    import horovod.keras as hvd
-    #    opt = hvd.DistributedOptimizer(opt)
+    if use_horovod:
+        import horovod.keras as hvd
+        opt = hvd.DistributedOptimizer(opt)
 
     # Compile the model
     model = models.Model(inputs=inputs, outputs=outputs, name='RPVClassifier')
