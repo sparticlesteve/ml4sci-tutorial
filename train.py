@@ -69,9 +69,16 @@ def main():
         configure_session(**config['session_config'])
     )
 
+    # Scale the learning rate
+    model_config = config['model_config']
+    if model_config.pop('scale_learning_rate'):
+        model_config['learning_rate'] = model_config['learning_rate'] * hvd.size()
+
     # Build the model
-    model = build_model(train_input.shape[1:], use_horovod=True,
-                        **config['model_config'])
+    logging.info(config)
+    model = build_model(train_input.shape[1:],
+                        use_horovod=True,
+                        **model_config)
     if hvd.rank() == 0:
         model.summary()
 
@@ -87,11 +94,18 @@ def main():
         os.makedirs(os.path.dirname(checkpoint_file), exist_ok=True)
         callbacks.append(keras.callbacks.ModelCheckpoint(checkpoint_file))
 
+    # Batch size
+    training_config = config['training_config']
+    bsize = training_config['batch_size']
+    per_node = training_config.pop('batch_size_per_node')
+    training_config['batch_size'] = bsize if per_node else (bsize // hvd.size())
+
     # Run the training
+    logging.info('Final training config: %s' % training_config)
     history = model.fit(x=train_input, y=train_labels,
                         validation_data=(valid_input, valid_labels),
                         callbacks=callbacks, verbose=2,
-                        **config['training_config'])
+                        **training_config)
 
     # Evaluate on the test set
     test_loss, test_acc = model.evaluate(test_input, test_labels, verbose=2)

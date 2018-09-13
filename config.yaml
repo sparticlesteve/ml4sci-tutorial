@@ -13,10 +13,12 @@ model_config:
     fc_sizes: [128]
     optimizer: Adam
     learning_rate: 0.001
+    scale_learning_rate: true
     dropout: 0.2
 
 training_config:
     batch_size: 128
+    batch_size_per_node: true
     epochs: 4
 
 checkpoint_file: $SCRATCH/ml4sci-tutorial/checkpoints/model.h5
