@@ -14,3 +14,12 @@ To run on 4 Cori Haswell nodes, submit it with:
 `
 sbatch -N 4 ./batchScript.sh
 `
+
+Here are some additional details you can use to customize.
+
+The configuration options are set in config.yaml. This includes layer sizes
+for the network, number of samples for training, validation, testing,
+batch size, learning rate, etc.
+
+An example environment is setup in setup.sh. This uses the 1.9.0 TensorFlow
+installation on Cori which may have everything you need.
