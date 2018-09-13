@@ -40,7 +40,7 @@ def load_dataset(path, n_train=412416, n_valid=137471, n_test=137471):
 def build_model(input_shape,
                 conv_sizes=[8, 16, 32], fc_sizes=[64],
                 dropout=0.5,
-                optimizer='Adam', lr=0.001,
+                optimizer='Adam', learning_rate=0.001,
                 use_horovod=False):
     """Construct the Keras model"""
 
@@ -68,7 +68,7 @@ def build_model(input_shape,
     opt_dict = dict(Adam=optimizers.Adam,
                     Nadam=optimizers.Nadam,
                     Adadelta=optimizers.Adadelta)
-    opt = opt_dict[optimizer](lr=lr)
+    opt = opt_dict[optimizer](lr=learning_rate)
     if use_horovod:
         import horovod.keras as hvd
         opt = hvd.DistributedOptimizer(opt)
