@@ -10,6 +10,7 @@ and Keras on the Cori system at NERSC.
 
 The provided batchScript.sh should provide all you need.
 To run on 4 Cori Haswell nodes, submit it with:
-```
-    sbatch -N 4 ./batchScript.sh
-```
+
+`
+sbatch -N 4 ./batchScript.sh
+`
